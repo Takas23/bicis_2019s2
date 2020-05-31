@@ -1,0 +1,70 @@
+import bicis.*
+import accesorios.*
+import deposito.*
+
+//consulta sobre el funcionamiento de fixture, y describe
+
+describe "testBicis" {
+	const farolito01 = new Farolito()
+	const farolito02 = new Farolito()
+	const canasto01 = new Canasto(volumen=8)
+	const morral01 = new Morral(largo=21, ojoDeGato=true)
+	const morral02 = new Morral(largo=6, ojoDeGato=false)
+	
+	const bici01 = new Bici(rodado=28,largo=150, marca="Olmo", accesorios=[farolito01])
+	const bici02 = new Bici(rodado=26,largo=110, marca="Legnano", accesorios=[farolito02, canasto01, morral01])
+	const bici03 = new Bici(rodado=20,largo=90, marca="Legnano", accesorios=[morral02])
+	const bici04 = new Bici(rodado=28,largo=142, marca="Olmo", accesorios=[])
+	
+	const deposito01 = new Deposito()
+	const deposito02 = new Deposito()
+	const deposito03 = new Deposito()
+	
+	test "bici01" {
+ 		assert.equals(85, bici01.altura())
+		assert.equals(34, bici01.velCrucero())
+		assert.equals(0, bici01.carga())
+		assert.equals(14.5, bici01.peso())
+		assert.that(bici01.tieneLuz())
+		assert.equals(1, bici01.accesoriosLivianos())
+	}
+	test "bici02" {
+		assert.equals(80, bici02.altura())
+		assert.equals(28, bici02.velCrucero())
+		assert.equals(23, bici02.carga())
+		assert.equals(15.5, bici02.peso())
+		assert.that(bici02.tieneLuz())
+		assert.equals(2, bici02.accesoriosLivianos())
+	}
+	test "bici03" {
+		assert.equals(65, bici03.altura())
+		assert.equals(22, bici03.velCrucero())
+		assert.equals(2, bici03.carga())
+		assert.equals(11.2, bici03.peso())
+		assert.notThat(bici03.tieneLuz())
+		assert.equals(0, bici03.accesoriosLivianos())
+	}
+	test "deposito01" {
+		deposito01.agregarBici(bici01)
+		deposito01.agregarBici(bici02)
+		deposito01.agregarBici(bici03)
+		
+		assert.equals([bici01, bici02], deposito01.bicisRapidas())
+		assert.equals(#{"Olmo", "Legnano"}, deposito01.marcas())
+		assert.notThat(deposito01.nocturno())
+		assert.that(deposito01.biciConCarga(10))
+		assert.notThat(deposito01.biciConCarga(50))
+	}
+		test "deposito02" {
+		deposito02.agregarBici(bici01)
+		deposito02.agregarBici(bici02)
+		
+		assert.that(deposito02.nocturno())
+	}
+		test "biciCompaniera" {
+		deposito03.agregarBici(bici01)
+		deposito03.agregarBici(bici04)
+		
+		assert.equals([bici01], deposito03.biciCompaniera(bici04))
+		}
+}
